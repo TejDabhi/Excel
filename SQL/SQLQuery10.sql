@@ -174,13 +174,13 @@ having sum(o.amount*o.quantity)>100000
 order by 'Total Sales Value' DESC;
 
 
-select c.customer_id,c.customer_name,c.city,count(o.order_id) as 'Number of Orders',sum(o.amount*o.quantity) as 'Total Purchase Value',MAX(o.amount) as 'Highest Transaction Value' 
+
+select c.customer_id,c.customer_name,c.city,count(o.order_id) as 'Number of Orders',sum(o.amount*o.quantity) as 'Total Purchase Value',MAX(o.amount*o.quantity) as 'Highest Transaction Value' 
 FROM Customers c INNER JOIN Orders o
 ON c.customer_id=o.customer_id
 where o.amount>25000 
 group by c.customer_id,c.customer_name,c.city
 having sum(o.amount*o.quantity)>50000
-
 
 select c.customer_id,c.customer_name,c.city,count(o.order_id) as 'Number of Orders',sum(o.amount*o.quantity) as 'Total Purchase Value',MAX(o.amount) as 'Highest Transaction Value' 
 FROM Customers c INNER JOIN Orders o
@@ -220,3 +220,286 @@ ON p.product_name=o.product_name
 group by p.product_name
 having count(o.order_id)>=3
 order by 'Total Revenue' DESC;
+
+
+select p.product_name,
+sum(o.quantity) as 'Total Quantity Sold',
+count(o.order_id) as 'Number of Orders',
+sum(o.amount*o.quantity) as 'Total Revenue'
+FROM Products p INNER JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_name
+having sum(o.quantity)>10 and count(o.order_id)>5
+
+select 
+c.city,
+count(o.customer_id) as 'Total Customers',
+count(o.order_id) as 'Number of Orders',
+sum(o.quantity) as 'Total Quantity Sold',
+sum(o.amount*o.quantity) as 'Total Revenue'
+FROM Orders o INNER JOIN Customers c
+ON c.customer_id=o.customer_id
+group by c.city
+having count(c.customer_id)>2 and count(o.order_id)>5 and sum(o.amount*o.quantity)>200000
+
+select * from Customers
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+count(o.order_id) as 'Number of Orders',
+min(o.amount) as 'Minimum Order Value',
+max(o.amount) as 'Maximum Order Value',
+avg(o.amount) as 'Average Order Value',
+sum(o.amount*o.quantity) as 'Total Purchase Value'
+FROM Orders o INNER JOIN Customers c
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having count(o.order_id)>2 
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+count(o.order_id) as 'Number of Orders',
+count(o.quantity) as 'Total Quantity Purchased',
+sum(o.amount*o.quantity) as 'Total Purchase Value'
+FROM Orders o INNER JOIN Customers c
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having count(o.order_id)>1
+order by c.customer_id DESC;
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+count(o.order_id) as 'Number of Orders',
+sum(o.amount*o.quantity) as 'Total Purchase Value'
+FROM Orders o INNER JOIN Customers c
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having count(o.order_id) IN(1,2)
+order by 'Total Purchase Value' DESC;
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+count(o.order_id) as 'Number of Orders',
+sum(o.amount*o.quantity) as 'Total Purchase Value'
+FROM Customers c LEFT JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+count(o.order_id) as 'Number of Orders',
+sum(o.amount*o.quantity) as 'Total Purchase Value'
+FROM Customers c LEFT JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having COUNT(o.order_id)=0
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City'
+FROM Customers c LEFT JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having COUNT(o.order_id)=0
+
+
+select 
+p.product_id as 'Product ID',
+p.product_name as 'Product Name',
+p.category as 'Category',
+p.price as 'Price'
+FROM Products p LEFT JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_id,p.product_name,p.category,p.price
+having COUNT(o.order_id)=0
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+o.product_name as 'Product Name',
+o.quantity as 'Quantity',
+o.amount as 'Amount'
+FROM Customers c FULL OUTER JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city,o.order_id,o.product_name,o.quantity,o.amount
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+o.order_id as 'Order ID',
+o.product_name as 'Product Name',
+o.amount as 'Amount'
+FROM Customers c FULL OUTER JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,o.order_id,o.product_name,o.amount
+having COUNT(o.order_id)=0 or COUNT(c.customer_id)=0
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City',
+o.order_id as 'Order ID',
+o.product_name as 'Product Name',
+o.quantity as 'Quantity',
+o.amount as 'Amount',
+sum(o.amount*o.quantity) as 'Transaction Value'
+FROM Customers c Right JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city,o.order_id,o.product_name,o.quantity,o.amount
+having COUNT(o.order_id)>=1 or COUNT(c.customer_id)>=1
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City'
+FROM Customers c Left JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having COUNT(o.order_id)=0
+
+select 
+p.product_id as 'Product ID',
+p.product_name as 'Product Name',
+p.category as 'Category',
+p.price as 'Price'
+FROM Products p LEFT JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_id,p.product_name,p.category,p.price
+having COUNT(o.order_id)=0
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'City'
+FROM Customers c Left JOIN Orders o
+ON c.customer_id=o.customer_id
+group by c.customer_id,c.customer_name,c.city
+having COUNT(o.order_id)=0
+
+select 
+p.product_id as 'Product ID',
+p.product_name as 'Product Name',
+p.category as 'Category',
+p.price as 'Price'
+FROM Products p LEFT JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_id,p.product_name,p.category,p.price
+having COUNT(o.order_id)=0
+order by p.price DESC
+
+
+select 
+c.customer_id as 'Customer ID',
+c.customer_name as 'Customer Name',
+c.city as 'city',
+p.product_id as 'Product ID',
+p.product_name as 'Product Name',
+p.category as 'Category'
+FROM Customers c CROSS JOIN Products p
+
+select 
+COUNT(c.customer_id*p.product_id) as 'size of a campaign'
+FROM Customers c CROSS JOIN Products p
+
+select 
+c.city as 'city',
+p.product_name as 'Product Name'
+FROM Customers c CROSS JOIN Products p
+
+
+SELECT 
+    c.customer_id AS 'Customer ID', 
+    c.customer_name AS 'Customer Name', 
+    c.city AS 'City', 
+    COUNT(o.order_id) AS 'Number of Orders', 
+    SUM(o.quantity) AS 'Total Quantity Purchased', 
+    SUM(o.quantity * o.amount) AS 'Total Revenue', 
+    AVG(o.amount) AS 'Average Order Value', 
+    MAX(o.amount) AS 'Maximum Order Value' 
+FROM Customers c 
+INNER JOIN Orders o ON c.customer_id = o.customer_id 
+GROUP BY c.customer_id, c.customer_name, c.city
+HAVING COUNT(o.order_id)>2
+ORDER BY 'Total Revenue' DESC, 'Number of Orders' DESC, 'Average Order Value' DESC;
+
+
+select 
+p.product_id as 'Product ID',
+COUNT(o.order_id) as 'Number of Orders',
+SUM(o.quantity) as 'Total Quantity Sold',
+SUM(o.amount*o.quantity) as 'Total Revenue',
+AVG(o.amount) AS 'Average Order Value', 
+MAX(o.amount) AS 'Maximum Order Value' 
+FROM Products p LEFT JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_id
+having COUNT(o.order_id)>=5 and SUM(o.amount*o.quantity)>200000
+
+
+SELECT 
+c.city AS 'City', 
+COUNT(c.customer_id) AS 'Number of Customers', 
+COUNT(o.order_id) AS 'Number of Orders', 
+SUM(o.quantity) AS 'Total Quantity Purchased', 
+SUM(o.quantity * o.amount) AS 'Total Revenue', 
+AVG(o.amount) AS 'Average Order Value' 
+FROM Customers c 
+INNER JOIN Orders o ON c.customer_id = o.customer_id 
+GROUP BY c.city
+HAVING COUNT(c.customer_id)>=5 and COUNT(o.order_id)>=10 and SUM(o.quantity * o.amount)>500000
+
+SELECT 
+c.customer_id AS 'Customer ID',
+c.customer_name AS 'Customer Name',
+c.city AS 'City', 
+SUM(o.quantity) AS 'Number of qualifying orders', 
+SUM(o.quantity * o.amount) AS 'Total value of qualifying orders', 
+AVG(o.amount) AS 'Average Order Value' 
+FROM Customers c INNER JOIN Orders o ON c.customer_id = o.customer_id 
+group by c.customer_id,c.customer_name,c.city
+HAVING COUNT(o.order_id)>=2 and SUM(o.amount*o.quantity)>=25000 
+
+select 
+p.product_name as 'Product Name',
+COUNT(o.order_id) as 'Number of Orders',
+SUM(o.quantity) as 'Total Quantity Sold',
+SUM(o.amount*o.quantity) as 'Total Revenue',
+AVG(o.amount) AS 'Average Order Value' 
+FROM Products p INNER JOIN Orders o
+ON p.product_name=o.product_name
+group by p.product_name
+having COUNT(o.order_id)>=5 and SUM(o.amount*o.quantity)>100000
+
+
+SELECT 
+c.customer_id AS 'Customer ID',
+c.customer_name AS 'Customer Name',
+c.city AS 'City', 
+SUM(o.order_id) AS 'Number of orders', 
+SUM(o.quantity) AS 'Total Quantity Purchased', 
+SUM(o.quantity * o.amount) AS 'Total Purchase Value', 
+AVG(o.amount) AS 'Average Order Value',
+MIN(o.amount) AS 'Minimum Order Value', 
+MAX(o.amount) AS 'Maximum Order Value' 
+FROM Customers c INNER JOIN Orders o ON c.customer_id = o.customer_id 
+group by c.customer_id,c.customer_name,c.city
+HAVING COUNT(o.order_id)>=3 and SUM(o.amount*o.quantity)>=100000
+ORDER BY 'Average Order Value' DESC;
