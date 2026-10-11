@@ -1,10 +1,3 @@
-/* =========================================================
-   EmployeeSales - Numeric, Date & Time, and NULL Functions
-   Run the EmployeeSales dataset script first, then run this file.
-   All queries are read-only SELECT statements.
-   ========================================================= */
-
-
 /* ---------------------------------------------------------
    SECTION A: NUMERIC FUNCTIONS (Tasks 1-7)
    --------------------------------------------------------- */
